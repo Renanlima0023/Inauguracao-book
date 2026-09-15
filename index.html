@@ -55,6 +55,8 @@ body{
 }
 .btn-add{background:#16A34A;color:#fff;}
 .btn-add:hover{background:#15803D;transform:translateY(-1px);}
+.btn-add-inaug{background:#0080FF;color:#fff;}
+.btn-add-inaug:hover{background:#0066CC;transform:translateY(-1px);}
 .btn-print{background:var(--engemon-blue);color:#fff;}
 .btn-print:hover{background:var(--engemon-dark);transform:translateY(-1px);}
 .btn-pdf{background:var(--dpsp-red);color:#fff;}
@@ -67,7 +69,36 @@ body{
 }
 .btn-ghost:hover{background:#F3F4F6;}
 
-/* ============ AÇÕES NO INÍCIO / FIM DOS DOCUMENTOS ============ */
+/* ============ BOTÃO DE ADICIONAR ITEM (dentro do doc) ============ */
+.add-item-block{
+  display:flex;justify-content:center;
+  margin:8px 0 20px;
+}
+.btn-add-item{
+  padding:12px 22px;border:2px dashed var(--stage-green);
+  background:#F0FDF4;color:var(--stage-green);
+  border-radius:8px;font-weight:800;font-size:12px;
+  cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition:.2s;letter-spacing:.3px;
+  -webkit-tap-highlight-color:transparent;
+  width:100%;justify-content:center;max-width:420px;
+}
+.btn-add-item:hover{
+  background:var(--stage-green);color:#fff;
+  border-color:var(--stage-green);border-style:solid;
+  transform:translateY(-1px);
+}
+.btn-add-item.inaug{
+  border-color:var(--engemon-blue);
+  background:#EFF6FF;
+  color:var(--engemon-blue);
+}
+.btn-add-item.inaug:hover{
+  background:var(--engemon-blue);color:#fff;
+  border-color:var(--engemon-blue);
+}
+
+/* ============ AÇÕES DE EXPORTAÇÃO NO FIM DOS DOCUMENTOS ============ */
 .doc-actions{
   display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
   padding:12px;margin:8px 16px 4px;
@@ -363,6 +394,12 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   margin-top:8px;
 }
 .btn-add-sig:hover{background:#15803D;}
+.btn-add-sig.inaug{
+  background:var(--engemon-blue);
+}
+.btn-add-sig.inaug:hover{
+  background:#0066CC;
+}
 
 /* ============ RODAPÉ ============ */
 .doc-footer{
@@ -440,6 +477,8 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
 
   .doc-actions{padding:10px;gap:6px;margin:8px 12px 4px;}
   .doc-actions .btn{flex:1;min-width:120px;justify-content:center;}
+
+  .btn-add-item{font-size:12px;padding:11px 16px;}
 }
 
 @media (max-width: 400px){
@@ -456,7 +495,7 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   body{background:#fff;padding:0;}
   .control-panel,.btn-card-remove,.btn-delete-slot,
   .btn-clear-sig,.photo-slot p,.page-selector,
-  .btn-add-sig,.btn-remove-sig,.doc-actions{display:none !important;}
+  .btn-add-sig,.btn-remove-sig,.doc-actions,.add-item-block{display:none !important;}
   .document-wrapper{box-shadow:none;width:100%;min-height:auto;}
   .document-wrapper.hidden{display:none !important;}
   .photo-slot.empty{display:none !important;}
@@ -475,7 +514,7 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
 <!-- ============ PAINEL DE CONTROLE ============ -->
 <div class="control-panel">
   <h3>📍 Books de Entrega Técnica — DPSP &amp; Engemon IT</h3>
-  <div class="hint">Escolha a página abaixo, preencha os dados, adicione evidências fotográficas e colete as assinaturas. Depois clique em "Baixar PDF" ou "Exportar Excel".</div>
+  <div class="hint">Escolha a página abaixo, preencha os dados e colete as assinaturas. Use os botões no final de cada página para imprimir, exportar PDF ou gerar Excel.</div>
 
   <div class="page-selector">
     <button id="btn-page-stage" class="active-stage" onclick="switchPage('stage')">⚙️ Stage</button>
@@ -483,14 +522,8 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   </div>
 
   <div style="display:flex;gap:8px;flex-wrap:wrap;width:100%;">
-    <button class="btn btn-add" id="btn-add-item" onclick="addCurrentCard()">➕ Adicionar Item</button>
     <button class="btn btn-ghost" onclick="saveToStorage()">💾 Salvar</button>
     <button class="btn btn-ghost" onclick="loadFromStorage(true)">📂 Carregar</button>
-  </div>
-  <div style="display:flex;gap:8px;flex-wrap:wrap;width:100%;">
-    <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
-    <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
-    <button class="btn btn-excel" onclick="exportExcel()">📊 Exportar Excel</button>
   </div>
 </div>
 
@@ -513,13 +546,6 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   </header>
 
   <div class="brand-strip"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
-
-  <!-- BOTÕES NO INÍCIO DA PÁGINA STAGE -->
-  <div class="doc-actions no-print">
-    <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
-    <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
-    <button class="btn btn-excel" onclick="exportExcel()">📊 Exportar Excel</button>
-  </div>
 
   <div class="doc-body">
 
@@ -560,9 +586,13 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
       </div>
     </div>
 
-    <!-- SEÇÃO 2: EVIDÊNCIAS -->
+    <!-- SEÇÃO 2: EVIDÊNCIAS + BOTÃO ADICIONAR -->
     <div class="section-title">2. Evidências Fotográficas do Stage</div>
     <div id="stagePdvContainer"></div>
+
+    <div class="add-item-block">
+      <button class="btn-add-item" onclick="addStageCard()">➕ Adicionar Equipamento</button>
+    </div>
 
     <!-- SEÇÃO 3: OBSERVAÇÕES -->
     <div class="section-title">3. Observações Técnicas do Stage</div>
@@ -585,7 +615,7 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
       <button class="btn-add-sig" onclick="addStageSignature()">➕ Adicionar Técnico</button>
     </div>
 
-    <!-- BOTÕES NO FINAL DA PÁGINA STAGE -->
+    <!-- BOTÕES DE EXPORTAÇÃO NO FINAL -->
     <div class="doc-actions no-print" style="margin-top:20px;">
       <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
       <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
@@ -620,13 +650,6 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   </header>
 
   <div class="brand-strip"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
-
-  <!-- BOTÕES NO INÍCIO DA PÁGINA INAUGURAÇÃO -->
-  <div class="doc-actions no-print">
-    <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
-    <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
-    <button class="btn btn-excel" onclick="exportExcel()">📊 Exportar Excel</button>
-  </div>
 
   <div class="doc-body">
 
@@ -669,6 +692,10 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
     <div class="section-title">2. Evidências Fotográficas de Inauguração</div>
     <div id="pdvContainer"></div>
 
+    <div class="add-item-block">
+      <button class="btn-add-item inaug" onclick="addInaugCard()">➕ Adicionar Atividade / PDV</button>
+    </div>
+
     <div class="section-title">3. Encerramento e Aceite Digital</div>
     <p class="term-text">
       Este Book de Entrega Técnica atesta o encerramento das atividades de infraestrutura e TI
@@ -676,7 +703,9 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
       de status operacional e as assinaturas abaixo conferem validade ao aceite técnico entre as partes.
     </p>
 
-    <div class="signatures-container">
+    <!-- CONTAINER DE ASSINATURAS: GERENTE (fixo) + TÉCNICOS (dinâmicos) -->
+    <div class="signatures-container" id="inaug-signatures-container">
+      <!-- Assinatura fixa do Gerente DPSP -->
       <div class="signature-box">
         <h4>Responsável pela Unidade DPSP</h4>
         <div class="canvas-wrapper">
@@ -690,23 +719,14 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
           <input type="text" id="sig-gerente-mat" placeholder="Ex: 2323">
         </div>
       </div>
-
-      <div class="signature-box">
-        <h4>Técnico em Campo — Engemon IT</h4>
-        <div class="canvas-wrapper">
-          <canvas id="canvas-tecnico"></canvas>
-        </div>
-        <button class="btn-clear-sig" onclick="clearCanvas('canvas-tecnico')">Limpar Assinatura</button>
-        <div class="sig-fields">
-          <label>Nome do Técnico</label>
-          <input type="text" id="sig-tecnico-nome" value="Francisco">
-          <label>RE / Documento</label>
-          <input type="text" id="sig-tecnico-re" value="ENG-3040">
-        </div>
-      </div>
+      <!-- Assinaturas dinâmicas de técnicos serão inseridas aqui via JS -->
     </div>
 
-    <!-- BOTÕES NO FINAL DA PÁGINA INAUGURAÇÃO -->
+    <div style="text-align:center;">
+      <button class="btn-add-sig inaug" onclick="addInaugSignature()">➕ Adicionar Técnico</button>
+    </div>
+
+    <!-- BOTÕES DE EXPORTAÇÃO NO FINAL -->
     <div class="doc-actions no-print" style="margin-top:20px;">
       <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
       <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
@@ -730,6 +750,7 @@ let currentPage = 'stage';
 let cardCounterStage = 1;
 let cardCounterInaug = 1;
 let stageSignatureCounter = 0;
+let inaugSignatureCounter = 0;
 
 /* URLs dos Logos (GitHub Raw) */
 const LOGO_ENGEMON = 'https://raw.githubusercontent.com/Renanlima0023/Inauguracao-book/main/logo-engemon.png';
@@ -744,30 +765,17 @@ function switchPage(page){
   const inaugBook = document.getElementById('book-inaug');
   const btnStage = document.getElementById('btn-page-stage');
   const btnInaug = document.getElementById('btn-page-inaug');
-  const btnAdd = document.getElementById('btn-add-item');
 
   if(page === 'stage'){
     stageBook.classList.remove('hidden');
     inaugBook.classList.add('hidden');
     btnStage.className = 'active-stage';
     btnInaug.className = '';
-    btnAdd.textContent = '➕ Adicionar Equipamento';
-    btnAdd.style.background = '#16A34A';
   } else {
     stageBook.classList.add('hidden');
     inaugBook.classList.remove('hidden');
     btnStage.className = '';
     btnInaug.className = 'active-inaug';
-    btnAdd.textContent = '➕ Adicionar Atividade / PDV';
-    btnAdd.style.background = '#0080FF';
-  }
-}
-
-function addCurrentCard(){
-  if(currentPage === 'stage'){
-    addStageCard();
-  } else {
-    addInaugCard();
   }
 }
 
@@ -944,7 +952,7 @@ function addStageSignature(data = null){
   const html = `
     <div class="signature-box" id="box-${sigId}">
       <button class="btn-remove-sig" onclick="removeStageSignature('${sigId}')" title="Remover assinatura">✕</button>
-      <h4>Técnico em Campo — Engemon IT</h4>
+      <h4>Técnico ${stageSignatureCounter} — Engemon IT</h4>
       <div class="canvas-wrapper">
         <canvas id="${canvasId}"></canvas>
       </div>
@@ -963,6 +971,46 @@ function addStageSignature(data = null){
 }
 
 function removeStageSignature(sigId){
+  if(confirm("Deseja realmente remover esta assinatura?")){
+    const box = document.getElementById(`box-${sigId}`);
+    if(box) box.remove();
+  }
+}
+
+/* =========================================================
+   ASSINATURAS DINÂMICAS — INAUGURAÇÃO (APENAS TÉCNICOS)
+   ========================================================= */
+function addInaugSignature(data = null){
+  inaugSignatureCounter++;
+  const sigId = `inaug-sig-${inaugSignatureCounter}`;
+  const canvasId = `canvas-${sigId}`;
+  const container = document.getElementById('inaug-signatures-container');
+
+  const nome = data && data.nome ? data.nome : '';
+  const re   = data && data.re   ? data.re   : '';
+
+  const html = `
+    <div class="signature-box" id="box-${sigId}">
+      <button class="btn-remove-sig" onclick="removeInaugSignature('${sigId}')" title="Remover assinatura">✕</button>
+      <h4>Técnico ${inaugSignatureCounter} — Engemon IT</h4>
+      <div class="canvas-wrapper">
+        <canvas id="${canvasId}"></canvas>
+      </div>
+      <button class="btn-clear-sig" onclick="clearCanvas('${canvasId}')">Limpar Assinatura</button>
+      <div class="sig-fields">
+        <label>Nome do Técnico</label>
+        <input type="text" class="inaug-sig-nome" value="${nome}" placeholder="Nome Completo">
+        <label>RE / Documento</label>
+        <input type="text" class="inaug-sig-re" value="${re}" placeholder="Ex: ENG-3040">
+      </div>
+    </div>`;
+
+  container.insertAdjacentHTML('beforeend', html);
+
+  setTimeout(()=>initSignatureCanvas(canvasId), 50);
+}
+
+function removeInaugSignature(sigId){
   if(confirm("Deseja realmente remover esta assinatura?")){
     const box = document.getElementById(`box-${sigId}`);
     if(box) box.remove();
@@ -1071,6 +1119,18 @@ function saveToStorage(){
     inaugCards.push({ title, serial, status, obs, photos });
   });
 
+  // Técnicos da inauguração (dinâmicos — pula a caixa do gerente)
+  const inaugSignatures = [];
+  document.querySelectorAll('#inaug-signatures-container .signature-box').forEach(box=>{
+    if(box.querySelector('#sig-gerente-nome')) return; // pula o gerente
+    const canvas = box.querySelector('canvas');
+    const nome = box.querySelector('.inaug-sig-nome')?.value || '';
+    const re   = box.querySelector('.inaug-sig-re')?.value || '';
+    let dataURL = '';
+    if(canvas) dataURL = canvas.toDataURL('image/png');
+    inaugSignatures.push({ nome, re, dataURL });
+  });
+
   const payload = {
     currentPage,
     stage: {
@@ -1102,10 +1162,7 @@ function saveToStorage(){
         nome: document.getElementById('sig-gerente-nome').value,
         mat:  document.getElementById('sig-gerente-mat').value,
       },
-      sigTecnico: {
-        nome: document.getElementById('sig-tecnico-nome').value,
-        re:   document.getElementById('sig-tecnico-re').value,
-      }
+      sigTecnicos: inaugSignatures
     }
   };
 
@@ -1174,10 +1231,38 @@ function loadFromStorage(showAlert = false){
         document.getElementById('sig-gerente-nome').value = i.sigGerente.nome || '';
         document.getElementById('sig-gerente-mat').value  = i.sigGerente.mat  || '';
       }
-      if(i.sigTecnico){
-        document.getElementById('sig-tecnico-nome').value = i.sigTecnico.nome || '';
-        document.getElementById('sig-tecnico-re').value   = i.sigTecnico.re   || '';
+
+      // Limpa técnicos dinâmicos antes de recriar (mantém só o gerente)
+      document.querySelectorAll('#inaug-signatures-container .signature-box').forEach(box=>{
+        if(!box.querySelector('#sig-gerente-nome')) box.remove();
+      });
+      inaugSignatureCounter = 0;
+
+      // Suporta tanto o formato antigo (sigTecnico) quanto o novo (sigTecnicos)
+      let sigTecArr = [];
+      if(i.sigTecnicos && Array.isArray(i.sigTecnicos)){
+        sigTecArr = i.sigTecnicos;
+      } else if(i.sigTecnico){
+        sigTecArr = [i.sigTecnico];
       }
+
+      sigTecArr.forEach(sig => {
+        addInaugSignature({ nome: sig.nome, re: sig.re });
+        if(sig.dataURL){
+          const boxes = document.querySelectorAll('#inaug-signatures-container .signature-box');
+          const lastBox = boxes[boxes.length - 1];
+          const canvas = lastBox.querySelector('canvas');
+          if(canvas){
+            const img = new Image();
+            img.onload = function(){
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+            img.src = sig.dataURL;
+          }
+        }
+      });
+
       document.getElementById('pdvContainer').innerHTML = '';
       cardCounterInaug = 1;
       (i.cards || []).forEach(c => addInaugCard(c.title, c));
@@ -1274,9 +1359,7 @@ function openPrintWindow(){
   if(currentPage === 'stage'){
     printHTML = buildStagePrintDocument();
   } else {
-    const sigGerenteURL = document.getElementById('canvas-gerente')?.toDataURL('image/png') || '';
-    const sigTecnicoURL = document.getElementById('canvas-tecnico')?.toDataURL('image/png') || '';
-    printHTML = buildInaugPrintDocument(sigGerenteURL, sigTecnicoURL);
+    printHTML = buildInaugPrintDocument();
   }
 
   const win = window.open('', '_blank', 'width=900,height=1200');
@@ -1577,7 +1660,7 @@ function buildStagePrintDocument(){
 /* =========================================================
    CONSTRUÇÃO DO DOCUMENTO DE IMPRESSÃO — INAUGURAÇÃO
    ========================================================= */
-function buildInaugPrintDocument(sigGerenteURL, sigTecnicoURL){
+function buildInaugPrintDocument(){
   const cards = [];
   document.querySelectorAll('#pdvContainer .pdv-card').forEach(card=>{
     const index  = card.querySelector('.pdv-index')?.textContent || 'ITEM';
@@ -1612,10 +1695,19 @@ function buildInaugPrintDocument(sigGerenteURL, sigTecnicoURL){
     nome: document.getElementById('sig-gerente-nome').value,
     mat:  document.getElementById('sig-gerente-mat').value,
   };
-  const sigT = {
-    nome: document.getElementById('sig-tecnico-nome').value,
-    re:   document.getElementById('sig-tecnico-re').value,
-  };
+  const sigGerenteURL = document.getElementById('canvas-gerente')?.toDataURL('image/png') || '';
+
+  // Técnicos dinâmicos
+  const sigTecnicosArr = [];
+  document.querySelectorAll('#inaug-signatures-container .signature-box').forEach(box=>{
+    if(box.querySelector('#sig-gerente-nome')) return; // pula o gerente
+    const canvas = box.querySelector('canvas');
+    const nome = box.querySelector('.inaug-sig-nome')?.value || '';
+    const re   = box.querySelector('.inaug-sig-re')?.value || '';
+    let dataURL = '';
+    if(canvas) dataURL = canvas.toDataURL('image/png');
+    sigTecnicosArr.push({ nome, re, dataURL });
+  });
 
   const cardsHTML = cards.length
     ? cards.map(c=>{
@@ -1646,6 +1738,47 @@ function buildInaugPrintDocument(sigGerenteURL, sigTecnicoURL){
         `;
       }).join('')
     : '<div class="empty-msg">Nenhum item de PDV registrado.</div>';
+
+  // Bloco do gerente
+  const gerenteHTML = `
+    <div class="signature-box">
+      <h4>Responsável pela Unidade DPSP</h4>
+      <div class="sig-canvas">
+        ${sigGerenteURL ? `<img src="${sigGerenteURL}" alt="Assinatura">` : '<div class="sig-empty">(sem assinatura)</div>'}
+      </div>
+      <div class="sig-fields">
+        <div>
+          <label>Nome do Responsável</label>
+          <div class="value">${escapeHtml(sigG.nome) || '&nbsp;'}</div>
+        </div>
+        <div>
+          <label>Nº da Matrícula</label>
+          <div class="value">${escapeHtml(sigG.mat) || '&nbsp;'}</div>
+        </div>
+      </div>
+    </div>`;
+
+  // Bloco dos técnicos (dinâmico)
+  const tecnicosHTML = sigTecnicosArr.length
+    ? sigTecnicosArr.map((sig, i)=>`
+        <div class="signature-box">
+          <h4>Técnico ${i+1} — Engemon IT</h4>
+          <div class="sig-canvas">
+            ${sig.dataURL ? `<img src="${sig.dataURL}" alt="Assinatura">` : '<div class="sig-empty">(sem assinatura)</div>'}
+          </div>
+          <div class="sig-fields">
+            <div>
+              <label>Nome do Técnico</label>
+              <div class="value">${escapeHtml(sig.nome) || '&nbsp;'}</div>
+            </div>
+            <div>
+              <label>RE / Documento</label>
+              <div class="value">${escapeHtml(sig.re) || '&nbsp;'}</div>
+            </div>
+          </div>
+        </div>
+      `).join('')
+    : '<div class="signature-box"><h4>Técnico — Engemon IT</h4><div class="sig-canvas"><div class="sig-empty">(nenhum técnico adicionado)</div></div><div class="sig-fields"><div><label>Nome do Técnico</label><div class="value">&nbsp;</div></div><div><label>RE / Documento</label><div class="value">&nbsp;</div></div></div></div>';
 
   return `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -1813,39 +1946,8 @@ function buildInaugPrintDocument(sigGerenteURL, sigTecnicoURL){
     </p>
 
     <div class="signatures-container">
-      <div class="signature-box">
-        <h4>Responsável pela Unidade DPSP</h4>
-        <div class="sig-canvas">
-          ${sigGerenteURL ? `<img src="${sigGerenteURL}" alt="Assinatura">` : '<div class="sig-empty">(sem assinatura)</div>'}
-        </div>
-        <div class="sig-fields">
-          <div>
-            <label>Nome do Responsável</label>
-            <div class="value">${escapeHtml(sigG.nome) || '&nbsp;'}</div>
-          </div>
-          <div>
-            <label>Nº da Matrícula</label>
-            <div class="value">${escapeHtml(sigG.mat) || '&nbsp;'}</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="signature-box">
-        <h4>Técnico em Campo — Engemon IT</h4>
-        <div class="sig-canvas">
-          ${sigTecnicoURL ? `<img src="${sigTecnicoURL}" alt="Assinatura">` : '<div class="sig-empty">(sem assinatura)</div>'}
-        </div>
-        <div class="sig-fields">
-          <div>
-            <label>Nome do Técnico</label>
-            <div class="value">${escapeHtml(sigT.nome) || '&nbsp;'}</div>
-          </div>
-          <div>
-            <label>RE / Documento</label>
-            <div class="value">${escapeHtml(sigT.re) || '&nbsp;'}</div>
-          </div>
-        </div>
-      </div>
+      ${gerenteHTML}
+      ${tecnicosHTML}
     </div>
 
     <div class="doc-footer">
@@ -1870,11 +1972,9 @@ function exportExcel(){
   const wb = XLSX.utils.book_new();
   let nomeArquivo = '';
 
-  // Descobre qual página está ativa
-  const paginaAtiva = currentPage; // 'stage' ou 'inaug'
+  const paginaAtiva = currentPage;
 
   if(paginaAtiva === 'stage'){
-    // ---------- APENAS ABA STAGE ----------
     const stageData = buildStageExcelData();
     const wsStage = XLSX.utils.aoa_to_sheet(stageData.rows);
     wsStage['!cols'] = stageData.widths.map(w => ({ wch: w }));
@@ -1888,7 +1988,6 @@ function exportExcel(){
     nomeArquivo = `Book_Stage_${nomeLoja}_${dataHoje}.xlsx`;
 
   } else {
-    // ---------- APENAS ABA INAUGURAÇÃO ----------
     const inaugData = buildInaugExcelData();
     const wsInaug = XLSX.utils.aoa_to_sheet(inaugData.rows);
     wsInaug['!cols'] = inaugData.widths.map(w => ({ wch: w }));
@@ -1902,11 +2001,9 @@ function exportExcel(){
     nomeArquivo = `Book_Inauguracao_${nomeLoja}_${dataHoje}.xlsx`;
   }
 
-  // ---------- DOWNLOAD ----------
   XLSX.writeFile(wb, nomeArquivo);
 }
 
-/* Aplica estilos (negrito, cores de fundo) nas células */
 function applyCellStyles(ws, styles){
   if(!styles) return;
   styles.forEach(st => {
@@ -1936,7 +2033,6 @@ function buildStageExcelData(){
   const rowsHeights = [];
   const widths = [22, 32, 18, 22, 45, 30];
 
-  // ===== FAIXA DE TÍTULO PRINCIPAL =====
   rows.push(['BOOK DE STAGE — CONFIGURAÇÃO']);
   merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
   styles.push({ r:rows.length-1, c:0, bold:true, bg:'FF16A34A', color:'FFFFFFFF' });
@@ -1944,7 +2040,6 @@ function buildStageExcelData(){
   rows.push([]);
   rowsHeights.push({ hpt: 6 });
 
-  // ===== SEÇÃO 1: RESUMO =====
   rows.push(['RESUMO GERAL']);
   merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
   styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDCFCE7', color:'FF14532D' });
@@ -1968,7 +2063,6 @@ function buildStageExcelData(){
   rows.push([]);
   rowsHeights.push({ hpt: 6 });
 
-  // ===== SEÇÃO 2: EQUIPAMENTOS =====
   rows.push(['EQUIPAMENTOS CONFIGURADOS']);
   merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
   styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDCFCE7', color:'FF14532D' });
@@ -2004,7 +2098,6 @@ function buildStageExcelData(){
   rows.push([]);
   rowsHeights.push({ hpt: 6 });
 
-  // ===== SEÇÃO 3: OBSERVAÇÕES =====
   rows.push(['OBSERVAÇÕES TÉCNICAS DO STAGE']);
   merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
   styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDCFCE7', color:'FF14532D' });
@@ -2018,7 +2111,6 @@ function buildStageExcelData(){
   rows.push([]);
   rowsHeights.push({ hpt: 6 });
 
-  // ===== SEÇÃO 4: ASSINATURAS =====
   rows.push(['ASSINATURAS DOS TÉCNICOS — ACEITE DO STAGE']);
   merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
   styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDCFCE7', color:'FF14532D' });
@@ -2073,7 +2165,6 @@ function buildInaugExcelData(){
   const rowsHeights = [];
   const widths = [22, 32, 18, 22, 45, 30];
 
-  // ===== FAIXA DE TÍTULO PRINCIPAL =====
   rows.push(['BOOK DE ENTREGA TÉCNICA — INAUGURAÇÃO']);
   merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
   styles.push({ r:rows.length-1, c:0, bold:true, bg:'FF0080FF', color:'FFFFFFFF' });
@@ -2081,7 +2172,6 @@ function buildInaugExcelData(){
   rows.push([]);
   rowsHeights.push({ hpt: 6 });
 
-  // ===== SEÇÃO 1: RESUMO =====
   rows.push(['RESUMO GERAL']);
   merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
   styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDBEAFE', color:'FF002B49' });
@@ -2105,7 +2195,6 @@ function buildInaugExcelData(){
   rows.push([]);
   rowsHeights.push({ hpt: 6 });
 
-  // ===== SEÇÃO 2: ATIVIDADES / PDV =====
   rows.push(['ATIVIDADES / PDV']);
   merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
   styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDBEAFE', color:'FF002B49' });
@@ -2141,7 +2230,6 @@ function buildInaugExcelData(){
   rows.push([]);
   rowsHeights.push({ hpt: 6 });
 
-  // ===== SEÇÃO 3: ASSINATURAS =====
   rows.push(['ASSINATURAS DE ENCERRAMENTO']);
   merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
   styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDBEAFE', color:'FF002B49' });
@@ -2151,6 +2239,7 @@ function buildInaugExcelData(){
   for(let c=0;c<5;c++) styles.push({ r:rows.length-1, c, bold:true, bg:'FFE5E7EB', align:'center' });
   rowsHeights.push({ hpt: 18 });
 
+  // Gerente DPSP (fixo)
   const sigGNome = document.getElementById('sig-gerente-nome').value;
   const sigGMat  = document.getElementById('sig-gerente-mat').value;
   const canvasG  = document.getElementById('canvas-gerente');
@@ -2165,19 +2254,25 @@ function buildInaugExcelData(){
   rows.push(['01', 'Responsável DPSP', sigGNome, sigGMat, assinouG, '']);
   rowsHeights.push({ hpt: 18 });
 
-  const sigTNome = document.getElementById('sig-tecnico-nome').value;
-  const sigTRe   = document.getElementById('sig-tecnico-re').value;
-  const canvasT  = document.getElementById('canvas-tecnico');
-  let assinouT = 'Não';
-  if(canvasT){
-    try{
-      const ctx = canvasT.getContext('2d');
-      const d = ctx.getImageData(0, 0, canvasT.width, canvasT.height).data;
-      for(let i = 3; i < d.length; i += 4){ if(d[i] !== 0){ assinouT = 'Sim'; break; } }
-    }catch(e){}
-  }
-  rows.push(['02', 'Técnico Engemon IT', sigTNome, sigTRe, assinouT, '']);
-  rowsHeights.push({ hpt: 18 });
+  // Técnicos dinâmicos
+  let contador = 2;
+  document.querySelectorAll('#inaug-signatures-container .signature-box').forEach(box=>{
+    if(box.querySelector('#sig-gerente-nome')) return; // pula o gerente
+    const nome = box.querySelector('.inaug-sig-nome')?.value || '';
+    const re   = box.querySelector('.inaug-sig-re')?.value || '';
+    const canvas = box.querySelector('canvas');
+    let assinou = 'Não';
+    if(canvas){
+      try{
+        const ctx = canvas.getContext('2d');
+        const d = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+        for(let i = 3; i < d.length; i += 4){ if(d[i] !== 0){ assinou = 'Sim'; break; } }
+      }catch(e){}
+    }
+    rows.push([String(contador).padStart(2,'0'), 'Técnico Engemon IT', nome, re, assinou, '']);
+    rowsHeights.push({ hpt: 18 });
+    contador++;
+  });
 
   return { rows, merges, styles, rowsHeights, widths };
 }
@@ -2193,6 +2288,7 @@ window.onload = function(){
     img.onerror = function() { this.style.display = 'none'; };
   });
 
+  // Adiciona 1 técnico padrão no Stage
   addStageSignature({ nome: 'Francisco', re: 'ENG-3040' });
 
   const raw = localStorage.getItem('book_dpsp_rascunho_v3');
@@ -2213,9 +2309,13 @@ window.onload = function(){
     addInaugCard('PDV 02 — Autoatendimento');
   }
 
+  // Garante pelo menos 1 técnico na inauguração
+  if(document.querySelectorAll('#inaug-signatures-container .signature-box').length <= 1){
+    addInaugSignature({ nome: 'Francisco', re: 'ENG-3040' });
+  }
+
   setTimeout(()=>{
     initSignatureCanvas('canvas-gerente');
-    initSignatureCanvas('canvas-tecnico');
   }, 300);
 };
 </script>
