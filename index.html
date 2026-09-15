@@ -112,6 +112,8 @@ body{
 }
 .logo-box{height:36px;display:flex;align-items:center;flex-shrink:0;}
 .logo-box svg,.logo-box img{height:100%;width:auto;object-fit:contain;max-width:110px;}
+.logo-box img:not([src]),
+.logo-box img[src=""]{display:none;}
 .doc-title-block{text-align:center;flex:1;min-width:0;}
 .doc-title-block h1{
   font-size:13px;color:var(--engemon-dark);
@@ -481,16 +483,14 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
 
   <header class="doc-header">
     <div class="logo-box">
-      <!-- SUBSTITUA O LINK ABAIXO PELO LINK DIRETO DO LOGO DA ENGEMON IT -->
-      <img src="https://github.com/Renanlima0023/Inauguracao-book/blob/main/logo-engemon.png" alt="Engemon IT">
+      <img src="https://raw.githubusercontent.com/Renanlima0023/Inauguracao-book/main/logo-engemon.png" alt="Engemon IT">
     </div>
     <div class="doc-title-block">
       <h1>Book de Stage — Configuração</h1>
       <h2>Implantação de Loja — Rede DPSP</h2>
     </div>
     <div class="logo-box">
-      <!-- SUBSTITUA O LINK ABAIXO PELO LINK DIRETO DO LOGO DO GRUPO DPSP -->
-      <img src="https://github.com/Renanlima0023/Inauguracao-book/blob/main/Logo-DPSP.png" alt="Grupo DPSP">
+      <img src="https://raw.githubusercontent.com/Renanlima0023/Inauguracao-book/main/Logo-DPSP.png" alt="Grupo DPSP">
     </div>
   </header>
 
@@ -535,20 +535,20 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
       </div>
     </div>
 
-    <!-- SEÇÃO 2: EVIDÊNCIAS (antes era 3) -->
+    <!-- SEÇÃO 2: EVIDÊNCIAS -->
     <div class="section-title">2. Evidências Fotográficas do Stage</div>
     <div id="stagePdvContainer"></div>
 
-    <!-- SEÇÃO 3: OBSERVAÇÕES (antes era 4) -->
+    <!-- SEÇÃO 3: OBSERVAÇÕES -->
     <div class="section-title">3. Observações Técnicas do Stage</div>
     <textarea class="pdv-obs" id="stage-obs" style="min-height:60px;" placeholder="Registre aqui observações relevantes sobre o stage de configuração..."></textarea>
 
-    <!-- SEÇÃO 4: ASSINATURAS (antes era 5) -->
+    <!-- SEÇÃO 4: ASSINATURAS -->
     <div class="section-title">4. Assinaturas dos Técnicos — Aceite do Stage</div>
     <p class="term-text">
       Este Book de Stage atesta a conclusão das atividades de configuração e preparação
       dos equipamentos de infraestrutura e TI para a futura inauguração da unidade acima identificada.
-      As evidências fotográficas, o checklist de configuração e as assinaturas dos técnicos abaixo
+      As evidências fotográficas e as assinaturas dos técnicos abaixo
       conferem validade ao aceite técnico do stage.
     </p>
 
@@ -576,16 +576,14 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
 
   <header class="doc-header">
     <div class="logo-box">
-      <!-- SUBSTITUA O LINK ABAIXO PELO LINK DIRETO DO LOGO DA ENGEMON IT -->
-      <img src="https://github.com/Renanlima0023/Inauguracao-book/blob/main/logo-engemon.png" alt="Engemon IT">
+      <img src="https://raw.githubusercontent.com/Renanlima0023/Inauguracao-book/main/logo-engemon.png" alt="Engemon IT">
     </div>
     <div class="doc-title-block">
       <h1>Book de Entrega Técnica</h1>
       <h2>Inauguração de Loja — Rede DPSP</h2>
     </div>
     <div class="logo-box">
-      <!-- SUBSTITUA O LINK ABAIXO PELO LINK DIRETO DO LOGO DO GRUPO DPSP -->
-      <img src="https://github.com/Renanlima0023/Inauguracao-book/blob/main/Logo-DPSP.png" alt="Grupo DPSP">
+      <img src="https://raw.githubusercontent.com/Renanlima0023/Inauguracao-book/main/Logo-DPSP.png" alt="Grupo DPSP">
     </div>
   </header>
 
@@ -686,6 +684,10 @@ let currentPage = 'stage';
 let cardCounterStage = 1;
 let cardCounterInaug = 1;
 let stageSignatureCounter = 0;
+
+/* URLs dos Logos (GitHub Raw) */
+const LOGO_ENGEMON = 'https://raw.githubusercontent.com/Renanlima0023/Inauguracao-book/main/logo-engemon.png';
+const LOGO_DPSP    = 'https://raw.githubusercontent.com/Renanlima0023/Inauguracao-book/main/Logo-DPSP.png';
 
 /* =========================================================
    TROCA DE PÁGINA
@@ -942,7 +944,6 @@ function initSignatureCanvas(canvasId){
     const rect = canvas.getBoundingClientRect();
     const cx = e.touches ? e.touches[0].clientX : e.clientX;
     const cy = e.touches ? e.touches[0].clientY : e.clientY;
-    // Ajusta escala caso canvas.width != rect.width
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     return { x: (cx - rect.left) * scaleX, y: (cy - rect.top) * scaleY };
@@ -1001,7 +1002,7 @@ function saveToStorage(){
     stageCards.push({ title, serial, status, obs, photos });
   });
 
-  // Stage signatures (apenas técnicos)
+  // Stage signatures
   const stageSignatures = [];
   document.querySelectorAll('#stage-signatures-container .signature-box').forEach(box=>{
     const canvas = box.querySelector('canvas');
@@ -1093,17 +1094,14 @@ function loadFromStorage(showAlert = false){
         if(s.loja.status) document.getElementById('stage-loja-status').value = s.loja.status;
       }
       if(s.obs !== undefined) document.getElementById('stage-obs').value = s.obs;
-      // Carrega cards
       document.getElementById('stagePdvContainer').innerHTML = '';
       cardCounterStage = 1;
       (s.cards || []).forEach(c => addStageCard(c.title, c));
 
-      // Carrega assinaturas do stage
       document.getElementById('stage-signatures-container').innerHTML = '';
       stageSignatureCounter = 0;
       (s.signatures || []).forEach(sig => {
         addStageSignature({ nome: sig.nome, re: sig.re });
-        // Restaura o desenho no canvas
         if(sig.dataURL){
           const boxes = document.querySelectorAll('#stage-signatures-container .signature-box');
           const lastBox = boxes[boxes.length - 1];
@@ -1300,7 +1298,6 @@ function buildStagePrintDocument(){
 
   const obsGeral = document.getElementById('stage-obs').value;
 
-  // Coleta assinaturas dinâmicas do stage (apenas técnicos)
   const stageSignatures = [];
   document.querySelectorAll('#stage-signatures-container .signature-box').forEach(box=>{
     const canvas = box.querySelector('canvas');
@@ -1339,7 +1336,6 @@ function buildStagePrintDocument(){
       }).join('')
     : '<div class="empty-msg">Nenhum equipamento registrado.</div>';
 
-  // Assinaturas lado a lado (auto-fit)
   const signaturesHTML = stageSignatures.length
     ? stageSignatures.map((sig, i)=>`
         <div class="signature-box">
@@ -1467,16 +1463,14 @@ function buildStagePrintDocument(){
 
   <header class="doc-header">
     <div class="logo-box">
-      <!-- SUBSTITUA O LINK ABAIXO PELO LINK DIRETO DO LOGO DA ENGEMON IT -->
-      <img src="https://i.postimg.cc/mrkr8HDq/LOGOS-01-fundo-branco.png" alt="Engemon IT">
+      <img src="${LOGO_ENGEMON}" alt="Engemon IT">
     </div>
     <div class="doc-title-block">
       <h1>Book de Stage — Configuração</h1>
       <h2>Implantação de Loja — Rede DPSP</h2>
     </div>
     <div class="logo-box">
-      <!-- SUBSTITUA O LINK ABAIXO PELO LINK DIRETO DO LOGO DO GRUPO DPSP -->
-      <img src="https://i.postimg.cc/L5L5jFXp/Logo-DPSP-Fundo-branco.png" alt="Grupo DPSP">
+      <img src="${LOGO_DPSP}" alt="Grupo DPSP">
     </div>
   </header>
 
@@ -1525,7 +1519,7 @@ function buildStagePrintDocument(){
     <p class="term-text">
       Este Book de Stage atesta a conclusão das atividades de configuração e preparação
       dos equipamentos de infraestrutura e TI para a futura inauguração da unidade acima identificada.
-      As evidências fotográficas, o checklist de configuração e as assinaturas dos técnicos abaixo
+      As evidências fotográficas e as assinaturas dos técnicos abaixo
       conferem validade ao aceite técnico do stage.
     </p>
     <div class="signatures-container">${signaturesHTML}</div>
@@ -1721,16 +1715,14 @@ function buildInaugPrintDocument(sigGerenteURL, sigTecnicoURL){
 
   <header class="doc-header">
     <div class="logo-box">
-      <!-- SUBSTITUA O LINK ABAIXO PELO LINK DIRETO DO LOGO DA ENGEMON IT -->
-      <img src="COLE_AQUI_O_LINK_DIRETO_DO_LOGO_ENGEMON" alt="Engemon IT">
+      <img src="${LOGO_ENGEMON}" alt="Engemon IT">
     </div>
     <div class="doc-title-block">
       <h1>Book de Entrega Técnica</h1>
       <h2>Inauguração de Loja — Rede DPSP</h2>
     </div>
     <div class="logo-box">
-      <!-- SUBSTITUA O LINK ABAIXO PELO LINK DIRETO DO LOGO DO GRUPO DPSP -->
-      <img src="COLE_AQUI_O_LINK_DIRETO_DO_LOGO_DPSP" alt="Grupo DPSP">
+      <img src="${LOGO_DPSP}" alt="Grupo DPSP">
     </div>
   </header>
 
@@ -1832,7 +1824,11 @@ window.onload = function(){
   document.getElementById('input-date').valueAsDate = new Date();
   document.getElementById('stage-input-date').valueAsDate = new Date();
 
-  // Inicializa 1 assinatura de técnico no stage
+  // Esconde logos que eventualmente falharem (evita ícone quebrado)
+  document.querySelectorAll('.logo-box img').forEach(img => {
+    img.onerror = function() { this.style.display = 'none'; };
+  });
+
   addStageSignature({ nome: 'Francisco', re: 'ENG-3040' });
 
   const raw = localStorage.getItem('book_dpsp_rascunho_v3');
