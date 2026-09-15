@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Book de Entrega Técnica — DPSP &amp; Engemon IT</title>
 
+<!-- xlsx-js-style: fork do SheetJS com suporte a estilos (negrito, cores) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+
 <style>
 :root{
   --engemon-blue:#0080FF;
@@ -56,11 +59,22 @@ body{
 .btn-print:hover{background:var(--engemon-dark);transform:translateY(-1px);}
 .btn-pdf{background:var(--dpsp-red);color:#fff;}
 .btn-pdf:hover{background:#B91C1C;transform:translateY(-1px);}
+.btn-excel{background:#1D6F42;color:#fff;}
+.btn-excel:hover{background:#155230;transform:translateY(-1px);}
 .btn-ghost{
   background:#fff;color:var(--engemon-dark);
   border:1px solid var(--border-color);
 }
 .btn-ghost:hover{background:#F3F4F6;}
+
+/* ============ AÇÕES NO INÍCIO / FIM DOS DOCUMENTOS ============ */
+.doc-actions{
+  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+  padding:12px;margin:8px 16px 4px;
+  background:linear-gradient(180deg,#F8FAFC 0%,#FFFFFF 100%);
+  border:1px dashed var(--border-color);border-radius:8px;
+}
+.doc-actions .btn{font-size:11px;padding:8px 14px;}
 
 /* ============ SELETOR DE PÁGINA ============ */
 .page-selector{
@@ -423,6 +437,9 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   .doc-footer{flex-direction:column;text-align:center;gap:3px;font-size:7px;}
 
   .btn-add-sig{width:100%;justify-content:center;padding:10px 14px;font-size:12px;}
+
+  .doc-actions{padding:10px;gap:6px;margin:8px 12px 4px;}
+  .doc-actions .btn{flex:1;min-width:120px;justify-content:center;}
 }
 
 @media (max-width: 400px){
@@ -439,7 +456,7 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   body{background:#fff;padding:0;}
   .control-panel,.btn-card-remove,.btn-delete-slot,
   .btn-clear-sig,.photo-slot p,.page-selector,
-  .btn-add-sig,.btn-remove-sig{display:none !important;}
+  .btn-add-sig,.btn-remove-sig,.doc-actions{display:none !important;}
   .document-wrapper{box-shadow:none;width:100%;min-height:auto;}
   .document-wrapper.hidden{display:none !important;}
   .photo-slot.empty{display:none !important;}
@@ -458,7 +475,7 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
 <!-- ============ PAINEL DE CONTROLE ============ -->
 <div class="control-panel">
   <h3>📍 Books de Entrega Técnica — DPSP &amp; Engemon IT</h3>
-  <div class="hint">Escolha a página abaixo, preencha os dados, adicione evidências fotográficas e colete as assinaturas. Depois clique em "Baixar PDF".</div>
+  <div class="hint">Escolha a página abaixo, preencha os dados, adicione evidências fotográficas e colete as assinaturas. Depois clique em "Baixar PDF" ou "Exportar Excel".</div>
 
   <div class="page-selector">
     <button id="btn-page-stage" class="active-stage" onclick="switchPage('stage')">⚙️ Stage</button>
@@ -473,6 +490,7 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   <div style="display:flex;gap:8px;flex-wrap:wrap;width:100%;">
     <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
     <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
+    <button class="btn btn-excel" onclick="exportExcel()">📊 Exportar Excel</button>
   </div>
 </div>
 
@@ -495,6 +513,13 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   </header>
 
   <div class="brand-strip"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+
+  <!-- BOTÕES NO INÍCIO DA PÁGINA STAGE -->
+  <div class="doc-actions no-print">
+    <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
+    <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
+    <button class="btn btn-excel" onclick="exportExcel()">📊 Exportar Excel</button>
+  </div>
 
   <div class="doc-body">
 
@@ -560,6 +585,13 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
       <button class="btn-add-sig" onclick="addStageSignature()">➕ Adicionar Técnico</button>
     </div>
 
+    <!-- BOTÕES NO FINAL DA PÁGINA STAGE -->
+    <div class="doc-actions no-print" style="margin-top:20px;">
+      <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
+      <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
+      <button class="btn btn-excel" onclick="exportExcel()">📊 Exportar Excel</button>
+    </div>
+
   </div>
 
   <footer class="doc-footer">
@@ -588,6 +620,13 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
   </header>
 
   <div class="brand-strip"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+
+  <!-- BOTÕES NO INÍCIO DA PÁGINA INAUGURAÇÃO -->
+  <div class="doc-actions no-print">
+    <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
+    <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
+    <button class="btn btn-excel" onclick="exportExcel()">📊 Exportar Excel</button>
+  </div>
 
   <div class="doc-body">
 
@@ -665,6 +704,13 @@ canvas{width:100%;height:80px;display:block;touch-action:none;cursor:crosshair;b
           <input type="text" id="sig-tecnico-re" value="ENG-3040">
         </div>
       </div>
+    </div>
+
+    <!-- BOTÕES NO FINAL DA PÁGINA INAUGURAÇÃO -->
+    <div class="doc-actions no-print" style="margin-top:20px;">
+      <button class="btn btn-print" onclick="window.print()">🖨️ Imprimir</button>
+      <button class="btn btn-pdf" onclick="exportPDF()">📄 Baixar PDF</button>
+      <button class="btn btn-excel" onclick="exportExcel()">📊 Exportar Excel</button>
     </div>
 
   </div>
@@ -913,7 +959,6 @@ function addStageSignature(data = null){
 
   container.insertAdjacentHTML('beforeend', html);
 
-  // Inicializa o canvas após inserir no DOM
   setTimeout(()=>initSignatureCanvas(canvasId), 50);
 }
 
@@ -932,7 +977,6 @@ function initSignatureCanvas(canvasId){
   if(!canvas || canvas.dataset.initialized) return;
   canvas.dataset.initialized = '1';
 
-  // Aguarda o layout estar pronto
   const parentWidth = canvas.parentElement.clientWidth || 300;
   canvas.width  = parentWidth;
   canvas.height = 80;
@@ -985,7 +1029,6 @@ function clearCanvas(canvasId){
    PERSISTÊNCIA (localStorage)
    ========================================================= */
 function saveToStorage(){
-  // Stage cards
   const stageCards = [];
   document.querySelectorAll('#stagePdvContainer .pdv-card').forEach(card=>{
     const title  = card.querySelector('.pdv-title').value;
@@ -1002,7 +1045,6 @@ function saveToStorage(){
     stageCards.push({ title, serial, status, obs, photos });
   });
 
-  // Stage signatures
   const stageSignatures = [];
   document.querySelectorAll('#stage-signatures-container .signature-box').forEach(box=>{
     const canvas = box.querySelector('canvas');
@@ -1013,7 +1055,6 @@ function saveToStorage(){
     stageSignatures.push({ nome, re, dataURL });
   });
 
-  // Inaug cards
   const inaugCards = [];
   document.querySelectorAll('#pdvContainer .pdv-card').forEach(card=>{
     const title  = card.querySelector('.pdv-title').value;
@@ -1818,13 +1859,336 @@ function buildInaugPrintDocument(sigGerenteURL, sigTecnicoURL){
 }
 
 /* =========================================================
+   EXPORTAÇÃO EXCEL (.xlsx) — exporta apenas a página atual
+   ========================================================= */
+function exportExcel(){
+  if(typeof XLSX === 'undefined'){
+    alert('A biblioteca de Excel ainda está carregando. Aguarde 2 segundos e tente novamente.');
+    return;
+  }
+
+  const wb = XLSX.utils.book_new();
+  let nomeArquivo = '';
+
+  // Descobre qual página está ativa
+  const paginaAtiva = currentPage; // 'stage' ou 'inaug'
+
+  if(paginaAtiva === 'stage'){
+    // ---------- APENAS ABA STAGE ----------
+    const stageData = buildStageExcelData();
+    const wsStage = XLSX.utils.aoa_to_sheet(stageData.rows);
+    wsStage['!cols'] = stageData.widths.map(w => ({ wch: w }));
+    wsStage['!merges'] = stageData.merges;
+    wsStage['!rows'] = stageData.rowsHeights;
+    applyCellStyles(wsStage, stageData.styles);
+    XLSX.utils.book_append_sheet(wb, wsStage, 'Stage');
+
+    const nomeLoja = (document.getElementById('stage-loja-nome')?.value || 'Loja').replace(/\s+/g, '_');
+    const dataHoje = new Date().toISOString().slice(0,10);
+    nomeArquivo = `Book_Stage_${nomeLoja}_${dataHoje}.xlsx`;
+
+  } else {
+    // ---------- APENAS ABA INAUGURAÇÃO ----------
+    const inaugData = buildInaugExcelData();
+    const wsInaug = XLSX.utils.aoa_to_sheet(inaugData.rows);
+    wsInaug['!cols'] = inaugData.widths.map(w => ({ wch: w }));
+    wsInaug['!merges'] = inaugData.merges;
+    wsInaug['!rows'] = inaugData.rowsHeights;
+    applyCellStyles(wsInaug, inaugData.styles);
+    XLSX.utils.book_append_sheet(wb, wsInaug, 'Inauguração');
+
+    const nomeLoja = (document.getElementById('loja-nome')?.value || 'Loja').replace(/\s+/g, '_');
+    const dataHoje = new Date().toISOString().slice(0,10);
+    nomeArquivo = `Book_Inauguracao_${nomeLoja}_${dataHoje}.xlsx`;
+  }
+
+  // ---------- DOWNLOAD ----------
+  XLSX.writeFile(wb, nomeArquivo);
+}
+
+/* Aplica estilos (negrito, cores de fundo) nas células */
+function applyCellStyles(ws, styles){
+  if(!styles) return;
+  styles.forEach(st => {
+    const cellRef = XLSX.utils.encode_cell({ r: st.r, c: st.c });
+    if(!ws[cellRef]) ws[cellRef] = { v: '', t: 's' };
+    ws[cellRef].s = ws[cellRef].s || {};
+    if(st.bold || st.color){
+      ws[cellRef].s.font = {};
+      if(st.bold)  ws[cellRef].s.font.bold = true;
+      if(st.color) ws[cellRef].s.font.color = { rgb: st.color };
+      if(!st.color && st.bold) ws[cellRef].s.font.color = { rgb: 'FF002B49' };
+    }
+    if(st.bg) ws[cellRef].s.fill = { fgColor: { rgb: st.bg }, patternType: 'solid' };
+    if(st.align){
+      ws[cellRef].s.alignment = { horizontal: st.align, vertical: 'center' };
+    }
+  });
+}
+
+/* =========================================================
+   ABA STAGE
+   ========================================================= */
+function buildStageExcelData(){
+  const rows = [];
+  const merges = [];
+  const styles = [];
+  const rowsHeights = [];
+  const widths = [22, 32, 18, 22, 45, 30];
+
+  // ===== FAIXA DE TÍTULO PRINCIPAL =====
+  rows.push(['BOOK DE STAGE — CONFIGURAÇÃO']);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bold:true, bg:'FF16A34A', color:'FFFFFFFF' });
+  rowsHeights.push({ hpt: 24 });
+  rows.push([]);
+  rowsHeights.push({ hpt: 6 });
+
+  // ===== SEÇÃO 1: RESUMO =====
+  rows.push(['RESUMO GERAL']);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDCFCE7', color:'FF14532D' });
+  rowsHeights.push({ hpt: 20 });
+
+  const resumo = [
+    ['Código da Loja DPSP', document.getElementById('stage-loja-codigo').value],
+    ['Nome da Loja',        document.getElementById('stage-loja-nome').value],
+    ['Regional / Distrito', document.getElementById('stage-loja-regional').value],
+    ['Data do Stage',       fmtData(document.getElementById('stage-input-date').value)],
+    ['Horário de Início',   document.getElementById('stage-loja-horario').value],
+    ['Técnico Responsável', document.getElementById('stage-loja-tecnico').value],
+    ['Status do Stage',     document.getElementById('stage-loja-status').value],
+  ];
+  resumo.forEach(([label, valor])=>{
+    rows.push([label, valor]);
+    merges.push({ s:{r:rows.length-1,c:1}, e:{r:rows.length-1,c:5} });
+    styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFF1F5F9' });
+    rowsHeights.push({ hpt: 18 });
+  });
+  rows.push([]);
+  rowsHeights.push({ hpt: 6 });
+
+  // ===== SEÇÃO 2: EQUIPAMENTOS =====
+  rows.push(['EQUIPAMENTOS CONFIGURADOS']);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDCFCE7', color:'FF14532D' });
+  rowsHeights.push({ hpt: 20 });
+
+  rows.push(['#', 'Equipamento', 'Nº Série', 'Status', 'Observações', '']);
+  for(let c=0;c<5;c++) styles.push({ r:rows.length-1, c, bold:true, bg:'FFE5E7EB', align:'center' });
+  rowsHeights.push({ hpt: 18 });
+
+  const equipCards = document.querySelectorAll('#stagePdvContainer .pdv-card');
+  if(equipCards.length === 0){
+    rows.push(['—', '(Nenhum equipamento registrado)', '', '', '', '']);
+    merges.push({ s:{r:rows.length-1,c:1}, e:{r:rows.length-1,c:5} });
+    rowsHeights.push({ hpt: 18 });
+  } else {
+    equipCards.forEach((card, idx)=>{
+      const meta = card.querySelectorAll('.pdv-meta input, .pdv-meta select');
+      const title  = card.querySelector('.pdv-title')?.value || '';
+      const serial = meta[0] ? meta[0].value : '';
+      const status = meta[1] ? meta[1].value : '';
+      const obs    = card.querySelector('.pdv-obs')?.value || '';
+      rows.push([
+        String(idx+1).padStart(2,'0'),
+        title,
+        serial,
+        status,
+        obs,
+        ''
+      ]);
+      rowsHeights.push({ hpt: 18 });
+    });
+  }
+  rows.push([]);
+  rowsHeights.push({ hpt: 6 });
+
+  // ===== SEÇÃO 3: OBSERVAÇÕES =====
+  rows.push(['OBSERVAÇÕES TÉCNICAS DO STAGE']);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDCFCE7', color:'FF14532D' });
+  rowsHeights.push({ hpt: 20 });
+
+  const obsTexto = document.getElementById('stage-obs').value || '(Sem observações registradas)';
+  rows.push([obsTexto]);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bg:'FFFFFFFF' });
+  rowsHeights.push({ hpt: 40 });
+  rows.push([]);
+  rowsHeights.push({ hpt: 6 });
+
+  // ===== SEÇÃO 4: ASSINATURAS =====
+  rows.push(['ASSINATURAS DOS TÉCNICOS — ACEITE DO STAGE']);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDCFCE7', color:'FF14532D' });
+  rowsHeights.push({ hpt: 20 });
+
+  rows.push(['#', 'Nome do Técnico', 'RE / Documento', 'Assinou', '', '']);
+  for(let c=0;c<4;c++) styles.push({ r:rows.length-1, c, bold:true, bg:'FFE5E7EB', align:'center' });
+  rowsHeights.push({ hpt: 18 });
+
+  const sigBoxes = document.querySelectorAll('#stage-signatures-container .signature-box');
+  if(sigBoxes.length === 0){
+    rows.push(['—', '(Nenhuma assinatura registrada)', '', '', '', '']);
+    merges.push({ s:{r:rows.length-1,c:1}, e:{r:rows.length-1,c:5} });
+    rowsHeights.push({ hpt: 18 });
+  } else {
+    sigBoxes.forEach((box, idx)=>{
+      const nome = box.querySelector('.stage-sig-nome')?.value || '';
+      const re   = box.querySelector('.stage-sig-re')?.value   || '';
+      const canvas = box.querySelector('canvas');
+      let assinou = 'Não';
+      if(canvas){
+        try{
+          const ctx = canvas.getContext('2d');
+          const dados = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+          for(let i = 3; i < dados.length; i += 4){
+            if(dados[i] !== 0){ assinou = 'Sim'; break; }
+          }
+        }catch(e){}
+      }
+      rows.push([
+        String(idx+1).padStart(2,'0'),
+        nome,
+        re,
+        assinou,
+        '',
+        ''
+      ]);
+      rowsHeights.push({ hpt: 18 });
+    });
+  }
+
+  return { rows, merges, styles, rowsHeights, widths };
+}
+
+/* =========================================================
+   ABA INAUGURAÇÃO
+   ========================================================= */
+function buildInaugExcelData(){
+  const rows = [];
+  const merges = [];
+  const styles = [];
+  const rowsHeights = [];
+  const widths = [22, 32, 18, 22, 45, 30];
+
+  // ===== FAIXA DE TÍTULO PRINCIPAL =====
+  rows.push(['BOOK DE ENTREGA TÉCNICA — INAUGURAÇÃO']);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bold:true, bg:'FF0080FF', color:'FFFFFFFF' });
+  rowsHeights.push({ hpt: 24 });
+  rows.push([]);
+  rowsHeights.push({ hpt: 6 });
+
+  // ===== SEÇÃO 1: RESUMO =====
+  rows.push(['RESUMO GERAL']);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDBEAFE', color:'FF002B49' });
+  rowsHeights.push({ hpt: 20 });
+
+  const resumo = [
+    ['Código da Loja DPSP', document.getElementById('loja-codigo').value],
+    ['Nome da Loja',        document.getElementById('loja-nome').value],
+    ['Regional / Distrito', document.getElementById('loja-regional').value],
+    ['Data da Execução',    fmtData(document.getElementById('input-date').value)],
+    ['Horário de Término',  document.getElementById('loja-horario').value],
+    ['Técnico Responsável', document.getElementById('loja-tecnico').value],
+    ['Status da Entrega',   document.getElementById('loja-status').value],
+  ];
+  resumo.forEach(([label, valor])=>{
+    rows.push([label, valor]);
+    merges.push({ s:{r:rows.length-1,c:1}, e:{r:rows.length-1,c:5} });
+    styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFF1F5F9' });
+    rowsHeights.push({ hpt: 18 });
+  });
+  rows.push([]);
+  rowsHeights.push({ hpt: 6 });
+
+  // ===== SEÇÃO 2: ATIVIDADES / PDV =====
+  rows.push(['ATIVIDADES / PDV']);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDBEAFE', color:'FF002B49' });
+  rowsHeights.push({ hpt: 20 });
+
+  rows.push(['#', 'Atividade / PDV', 'Nº Série', 'Status', 'Observações', '']);
+  for(let c=0;c<5;c++) styles.push({ r:rows.length-1, c, bold:true, bg:'FFE5E7EB', align:'center' });
+  rowsHeights.push({ hpt: 18 });
+
+  const inaugCards = document.querySelectorAll('#pdvContainer .pdv-card');
+  if(inaugCards.length === 0){
+    rows.push(['—', '(Nenhuma atividade registrada)', '', '', '', '']);
+    merges.push({ s:{r:rows.length-1,c:1}, e:{r:rows.length-1,c:5} });
+    rowsHeights.push({ hpt: 18 });
+  } else {
+    inaugCards.forEach((card, idx)=>{
+      const meta = card.querySelectorAll('.pdv-meta input, .pdv-meta select');
+      const title  = card.querySelector('.pdv-title')?.value || '';
+      const serial = meta[0] ? meta[0].value : '';
+      const status = meta[1] ? meta[1].value : '';
+      const obs    = card.querySelector('.pdv-obs')?.value || '';
+      rows.push([
+        String(idx+1).padStart(2,'0'),
+        title,
+        serial,
+        status,
+        obs,
+        ''
+      ]);
+      rowsHeights.push({ hpt: 18 });
+    });
+  }
+  rows.push([]);
+  rowsHeights.push({ hpt: 6 });
+
+  // ===== SEÇÃO 3: ASSINATURAS =====
+  rows.push(['ASSINATURAS DE ENCERRAMENTO']);
+  merges.push({ s:{r:rows.length-1,c:0}, e:{r:rows.length-1,c:5} });
+  styles.push({ r:rows.length-1, c:0, bold:true, bg:'FFDBEAFE', color:'FF002B49' });
+  rowsHeights.push({ hpt: 20 });
+
+  rows.push(['#', 'Papel', 'Nome', 'Documento', 'Assinou', '']);
+  for(let c=0;c<5;c++) styles.push({ r:rows.length-1, c, bold:true, bg:'FFE5E7EB', align:'center' });
+  rowsHeights.push({ hpt: 18 });
+
+  const sigGNome = document.getElementById('sig-gerente-nome').value;
+  const sigGMat  = document.getElementById('sig-gerente-mat').value;
+  const canvasG  = document.getElementById('canvas-gerente');
+  let assinouG = 'Não';
+  if(canvasG){
+    try{
+      const ctx = canvasG.getContext('2d');
+      const d = ctx.getImageData(0, 0, canvasG.width, canvasG.height).data;
+      for(let i = 3; i < d.length; i += 4){ if(d[i] !== 0){ assinouG = 'Sim'; break; } }
+    }catch(e){}
+  }
+  rows.push(['01', 'Responsável DPSP', sigGNome, sigGMat, assinouG, '']);
+  rowsHeights.push({ hpt: 18 });
+
+  const sigTNome = document.getElementById('sig-tecnico-nome').value;
+  const sigTRe   = document.getElementById('sig-tecnico-re').value;
+  const canvasT  = document.getElementById('canvas-tecnico');
+  let assinouT = 'Não';
+  if(canvasT){
+    try{
+      const ctx = canvasT.getContext('2d');
+      const d = ctx.getImageData(0, 0, canvasT.width, canvasT.height).data;
+      for(let i = 3; i < d.length; i += 4){ if(d[i] !== 0){ assinouT = 'Sim'; break; } }
+    }catch(e){}
+  }
+  rows.push(['02', 'Técnico Engemon IT', sigTNome, sigTRe, assinouT, '']);
+  rowsHeights.push({ hpt: 18 });
+
+  return { rows, merges, styles, rowsHeights, widths };
+}
+
+/* =========================================================
    BOOT
    ========================================================= */
 window.onload = function(){
   document.getElementById('input-date').valueAsDate = new Date();
   document.getElementById('stage-input-date').valueAsDate = new Date();
 
-  // Esconde logos que eventualmente falharem (evita ícone quebrado)
   document.querySelectorAll('.logo-box img').forEach(img => {
     img.onerror = function() { this.style.display = 'none'; };
   });
